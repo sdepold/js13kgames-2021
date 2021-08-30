@@ -1,4 +1,4 @@
-import Sprite from "kontra/src/sprite";
+import { Sprite } from "kontra";
 import Weapon from "../player/weapon";
 
 export default function skillBackAttach(player) {
@@ -27,4 +27,4 @@ export default function skillBackAttach(player) {
 
 skillBackAttach.limit = 1;
 skillBackAttach.type = "sba";
-skillBackAttach.title = "Backwards Attack"
+skillBackAttach.title = "Backwards Attack";

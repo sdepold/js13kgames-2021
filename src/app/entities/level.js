@@ -1,4 +1,4 @@
-import TileEngine from "kontra/src/tileEngine";
+import {TileEngine} from "kontra";
 import devil from "./monster/devil";
 import skullFace from "./monster/skull-face";
 import seedy from "./monster/seedy";

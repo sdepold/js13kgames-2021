@@ -1,5 +1,4 @@
-import Sprite from "kontra/src/sprite";
-import { getCanvas } from "kontra/src/core";
+import { getCanvas, Sprite } from "kontra";
 
 export default class SplashScreen {
   constructor(content, onClick, options) {

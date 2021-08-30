@@ -1,6 +1,5 @@
-import Sprite from 'kontra/src/sprite'
-import SpriteSheet from 'kontra/src/spriteSheet'
-import Monster from '../monster';
+import { Sprite, SpriteSheet } from "kontra";
+import Monster from "../monster";
 
 export default function skullFace() {
   const weaponSheet = SpriteSheet({
@@ -10,9 +9,9 @@ export default function skullFace() {
     animations: {
       weapon: {
         frames: "1..1",
-        frameRate: 1
-      }
-    }
+        frameRate: 1,
+      },
+    },
   });
 
   return new Monster({
@@ -21,7 +20,7 @@ export default function skullFace() {
     walk: "5..8",
     ouch: "9..9",
 
-    shouldAttack: monster => {
+    shouldAttack: (monster) => {
       const result = monster.attackAt && monster.attackAt < ~~new Date();
 
       if (!monster.attackAt || monster.attackAt < ~~new Date()) {
@@ -41,13 +40,13 @@ export default function skullFace() {
         height: 10,
         width: 4,
         animations: weaponSheet.animations,
-        anchor: { x: .5, y: .5 },
+        anchor: { x: 0.5, y: 0.5 },
         rotation: 0,
         rotationDelta: 1,
         update() {
           this.advance();
-          this.rotation = this.rotation + .3;
-        }
+          this.rotation = this.rotation + 0.3;
+        },
       };
 
       monster.weapons.push(Sprite({ ...weaponDefaults }));
@@ -60,7 +59,7 @@ export default function skullFace() {
           dx: 0,
           dy: -2,
           x: sprite.x + sprite.width / 2 - 5,
-          y: sprite.y + 10
+          y: sprite.y + 10,
         })
       );
       monster.weapons.push(
@@ -69,11 +68,11 @@ export default function skullFace() {
           dx: 0,
           dy: 2,
           x: sprite.x + sprite.width / 2 - 5,
-          y: sprite.y + sprite.height + 5
+          y: sprite.y + sprite.height + 5,
         })
       );
 
-      zzfx(1, .1, 1216, .4, .08, 4.3, 2.4, .7, .02);
-    }
+      zzfx(1, 0.1, 1216, 0.4, 0.08, 4.3, 2.4, 0.7, 0.02);
+    },
   });
 }

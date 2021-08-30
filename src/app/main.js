@@ -1,35 +1,31 @@
-import { init, getContext } from "kontra/src/core";
-import GameLoop from "kontra/src/gameLoop";
-
+import { getContext, init, GameLoop, Sprite } from "kontra";
 import { initAudio } from "./audio";
+import Ladder from "./entities/ladder";
+import Level from "./entities/level";
 import Player from "./entities/player";
 import Game from "./game";
-import { setCanvasSize, collides } from "./misc/helper";
-import Level from "./entities/level";
-import VirtualStick from "virtual-stick";
+import { collides, setCanvasSize } from "./misc/helper";
 import ProgressBar from "./progress-bar";
-import Ladder from "./entities/ladder";
-import Sprite from 'kontra/src/sprite';
 import SplashScreen, {
-  getPauseScreen,
   getEndScreen,
-  getWinnerScreen
+  getPauseScreen,
+  getWinnerScreen,
 } from "./splash-screen";
 import TombStone from "./tombstone";
 
 const { width, height } = setCanvasSize();
 const game = new Game();
-const controller = new VirtualStick({
-  container: document.querySelector("#controller"),
-  "button-size": 40,
-  "track-size": 80,
-  "track-color": "#72d6ce99",
-  "track-stroke-color": "#222222"
-});
-const gameTitle = "NOEGNUD";
+const gameTitle = "untitled game";
 
 function renderDamage({ x, y }, damage) {
-  const colors = ["#44D9CF", "#30718C", "#EC402B", "#B1CCD0", "#FDE700", "#FF7B00"];
+  const colors = [
+    "#44D9CF",
+    "#30718C",
+    "#EC402B",
+    "#B1CCD0",
+    "#FDE700",
+    "#FF7B00",
+  ];
   const color = colors[~~(Math.random() * colors.length)];
 
   const sprite = Sprite({
@@ -40,7 +36,7 @@ function renderDamage({ x, y }, damage) {
     fontSize: 10,
     opacity: 1,
     render() {
-      this.context.save()
+      this.context.save();
       this.context.globalAlpha = this.opacity;
       this.context.font = `${this.fontSize}px Marker Felt`;
       this.context.fillStyle = color;
@@ -49,14 +45,18 @@ function renderDamage({ x, y }, damage) {
     },
     update() {
       this.advance();
-      this.opacity -= .01;
-      this.fontSize -= .1;
-      if (this.opacity < .25) {
+      this.opacity -= 0.01;
+      this.fontSize -= 0.1;
+      if (this.opacity < 0.25) {
         this.ttl = 0;
       }
-    }
+    },
   });
-  game.add({ getSprites() { return [sprite] } });
+  game.add({
+    getSprites() {
+      return [sprite];
+    },
+  });
 }
 
 let player, tileEngine, level, startScreen;
@@ -80,11 +80,11 @@ const progressBar = new ProgressBar(document.querySelectorAll("img"), () => {
           if (new Date() - lastShuffle > delta) {
             text = text
               .split("")
-              .sort(() => (Math.random() > .5 ? -1 : 1))
+              .sort(() => (Math.random() > 0.5 ? -1 : 1))
               .join("");
-            if (Math.random() < .2) {
+            if (Math.random() < 0.2) {
               text = "DUNGEON";
-            } else if (Math.random() > .8) {
+            } else if (Math.random() > 0.8) {
               text = gameTitle;
             }
             lastShuffle = new Date();
@@ -94,11 +94,14 @@ const progressBar = new ProgressBar(document.querySelectorAll("img"), () => {
           ctx.fillText(text, this.width / 4, line.y);
         };
       })(),
-      '',
-      '',
-      '',
+      "",
+      "",
+      "",
       ["Touch to start!"],
-      ["(The game will ask for access to your audio system!)", { footer: true, fontSize: 8 }]
+      [
+        "(The game will ask for access to your audio system!)",
+        { footer: true, fontSize: 8 },
+      ],
     ],
     () => {
       const initGame = () => {
@@ -109,7 +112,7 @@ const progressBar = new ProgressBar(document.querySelectorAll("img"), () => {
     },
     {
       fontSize: 14,
-      lineHeight: 30
+      lineHeight: 30,
     }
   );
   game.add(startScreen, 12);
@@ -123,9 +126,9 @@ game.add(progressBar);
 var loop = GameLoop({
   update() {
     const sprites = game.getSprites();
-    const monsters = sprites.filter(s => s.type === "monster");
-    const playerSprite = sprites.filter(s => s.type === "player")[0];
-    const shields = sprites.filter(s => s.type === "shield");
+    const monsters = sprites.filter((s) => s.type === "monster");
+    const playerSprite = sprites.filter((s) => s.type === "player")[0];
+    const shields = sprites.filter((s) => s.type === "shield");
     let ladder;
 
     function hurtPlayer(player, enemy, sprites) {
@@ -134,10 +137,10 @@ var loop = GameLoop({
 
       if (player.healthPoints <= 0) {
         sprites
-          .filter(s =>
+          .filter((s) =>
             ["player", "shadow", "weapon", "shield"].includes(s.type)
           )
-          .forEach(s => s.ttl = 0);
+          .forEach((s) => (s.ttl = 0));
         game.add(new TombStone(playerSprite));
         game.add(getEndScreen(player), 11);
       }
@@ -147,17 +150,17 @@ var loop = GameLoop({
       game.loaded &&
       startScreen.hidden &&
       !monsters.length &&
-      !sprites.find(s => s.type === "ladder")
+      !sprites.find((s) => s.type === "ladder")
     ) {
       ladder = new Ladder();
       game.add(ladder, 1);
     }
 
-    sprites.forEach(sprite => {
+    sprites.forEach((sprite) => {
       if (sprite.type === "weapon" && sprite.entity.animate) {
-        monsters.forEach(monster => {
+        monsters.forEach((monster) => {
           if (collides(monster, sprite)) {
-            zzfx(.3, .1, 94, .1, .14, 0, 0, 5, .29); // ZzFX 39966
+            zzfx(0.3, 0.1, 94, 0.1, 0.14, 0, 0, 5, 0.29); // ZzFX 39966
             monster.entity.healthPoints -= player.d;
             renderDamage(monster, player.d);
 
@@ -174,12 +177,12 @@ var loop = GameLoop({
           hurtPlayer(player, sprite.monster, sprites);
 
           sprite.ttl = 0;
-        } else if (shields.find(shield => collides(sprite, shield))) {
+        } else if (shields.find((shield) => collides(sprite, shield))) {
           sprite.ttl = 0;
-          zzfx(1, .1, 327, .1, .08, 7.4, .2, 5.9, .49); // ZzFX 88235
+          zzfx(1, 0.1, 327, 0.1, 0.08, 7.4, 0.2, 5.9, 0.49); // ZzFX 88235
         }
       } else if (sprite === playerSprite) {
-        monsters.forEach(monster => {
+        monsters.forEach((monster) => {
           if (
             collides(monster, sprite) &&
             new Date() - (monster.lastCollisionAt || 0) > 1000
@@ -220,14 +223,14 @@ var loop = GameLoop({
     const ctx = getContext();
     const sprites = game.getSprites();
 
-    sprites.forEach(s => {
+    sprites.forEach((s) => {
       ctx.save();
       ctx.scale(2, 2);
       s.render();
       ctx.restore();
     });
     controller.draw();
-  }
+  },
 });
 
 loop.start();

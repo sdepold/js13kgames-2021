@@ -1,7 +1,5 @@
-import Sprite from "kontra/src/sprite";
-import SpriteSheet from "kontra/src/spriteSheet";
+import { getCanvas, Sprite, SpriteSheet } from "kontra";
 import { getDirection } from "../../misc/helper";
-import { getCanvas } from "kontra/src/core";
 
 export default class Weapon {
   constructor(player) {
@@ -31,9 +29,9 @@ export default class Weapon {
         animations: {
           weapon: {
             frames: "0..0",
-            frameRate: 1
-          }
-        }
+            frameRate: 1,
+          },
+        },
       });
 
       const canvas = getCanvas();
@@ -47,7 +45,7 @@ export default class Weapon {
         height: 19,
         width: 8,
         animations: spriteSheet.animations,
-        anchor: { x: .5, y: .5 },
+        anchor: { x: 0.5, y: 0.5 },
         rotation: 0,
         rotationDelta: player.swordSpeed,
         update() {
@@ -64,7 +62,7 @@ export default class Weapon {
             }
             this.rotation = this.rotation + player.swordSpeed;
           }
-        }
+        },
       });
     }
 

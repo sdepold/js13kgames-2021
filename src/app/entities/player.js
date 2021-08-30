@@ -1,6 +1,4 @@
-import { getCanvas } from "kontra/src/core";
-import Sprite from "kontra/src/sprite";
-import SpriteSheet from "kontra/src/spriteSheet";
+import { getCanvas, Sprite, SpriteSheet } from "kontra";
 
 import { getSkills } from "./skill";
 import { addKeyboardControls, addMouseControls } from "./player/controls";

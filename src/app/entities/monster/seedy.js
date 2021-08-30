@@ -1,7 +1,6 @@
-import Sprite from "kontra/src/sprite";
-import SpriteSheet from "kontra/src/spriteSheet";
-import Monster from "../monster";
+import { Sprite } from "kontra";
 import { getDirection } from "../../misc/helper";
+import Monster from "../monster";
 
 export default function devil(player) {
   let lastTeleportedAt = new Date();
@@ -22,7 +21,7 @@ export default function devil(player) {
       }
     },
 
-    shouldAttack: monster => {
+    shouldAttack: (monster) => {
       const result = monster.attackAt && monster.attackAt < ~~new Date();
 
       if (!monster.attackAt || monster.attackAt < ~~new Date()) {
@@ -50,7 +49,7 @@ export default function devil(player) {
           rotation: angle + 1.5,
           height: 19,
           width: 8,
-          anchor: { x: .5, y: .5 },
+          anchor: { x: 0.5, y: 0.5 },
           render() {
             this.context.save();
             this.context.shadowColor = "#000";
@@ -58,11 +57,11 @@ export default function devil(player) {
             this.context.fillStyle = "#97da3f";
             this.context.fillRect(this.x, this.y, 3, 3);
             this.context.restore();
-          }
+          },
         })
       );
 
-      zzfx(.5, .1, 1059, .1, .52, 5.4, 1.5, 43.1, .79); // ZzFX 30517
-    }
+      zzfx(0.5, 0.1, 1059, 0.1, 0.52, 5.4, 1.5, 43.1, 0.79); // ZzFX 30517
+    },
   });
 }

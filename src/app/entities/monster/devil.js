@@ -1,7 +1,6 @@
-import Sprite from 'kontra/src/sprite'
-import SpriteSheet from 'kontra/src/spriteSheet'
-import Monster from '../monster';
-import { getDirection } from '../../misc/helper';
+import { Sprite, SpriteSheet } from "kontra";
+import { getDirection } from "../../misc/helper";
+import Monster from "../monster";
 
 export default function devil(player) {
   const weaponSheet = SpriteSheet({
@@ -11,9 +10,9 @@ export default function devil(player) {
     animations: {
       weapon: {
         frames: "2..2",
-        frameRate: 1
-      }
-    }
+        frameRate: 1,
+      },
+    },
   });
 
   return new Monster({
@@ -22,7 +21,7 @@ export default function devil(player) {
     walk: "10..13",
     ouch: "14..14",
 
-    shouldAttack: monster => {
+    shouldAttack: (monster) => {
       const result = monster.attackAt && monster.attackAt < ~~new Date();
 
       if (!monster.attackAt || monster.attackAt < ~~new Date()) {
@@ -33,23 +32,29 @@ export default function devil(player) {
     },
 
     attack: (monster, sprite) => {
-      const { dx, dy, angle } = getDirection(5, monster.sprite, player.playerSprite);
+      const { dx, dy, angle } = getDirection(
+        5,
+        monster.sprite,
+        player.playerSprite
+      );
 
-      monster.weapons.push(Sprite({
-        monster,
-        type: "monsterWeapon",
-        x: sprite.x - 5,
-        y: sprite.y + sprite.height / 2 + 10,
-        dx,
-        dy,
-        rotation: angle + 1.5,
-        height: 19,
-        width: 8,
-        animations: weaponSheet.animations,
-        anchor: { x: .5, y: .5 }
-      }));
+      monster.weapons.push(
+        Sprite({
+          monster,
+          type: "monsterWeapon",
+          x: sprite.x - 5,
+          y: sprite.y + sprite.height / 2 + 10,
+          dx,
+          dy,
+          rotation: angle + 1.5,
+          height: 19,
+          width: 8,
+          animations: weaponSheet.animations,
+          anchor: { x: 0.5, y: 0.5 },
+        })
+      );
 
-      zzfx(1, .1, 131, 1, .4, 0, 4.3, 0, .05);
-    }
+      zzfx(1, 0.1, 131, 1, 0.4, 0, 4.3, 0, 0.05);
+    },
   });
 }

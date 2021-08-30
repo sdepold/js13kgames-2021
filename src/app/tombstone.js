@@ -1,4 +1,4 @@
-import Sprite from "kontra/src/sprite";
+import { Sprite } from "kontra";
 import { addShadow } from "./misc/shadow";
 
 const LENGTH = 10;
@@ -12,7 +12,9 @@ export default class TombStone {
     const { x, y } = this.object;
 
     if (!this.sprites) {
-      const text = [1,2,3,4,5].map(()=>LENGTH * Math.min(0.8, Math.random()));
+      const text = [1, 2, 3, 4, 5].map(
+        () => LENGTH * Math.min(0.8, Math.random())
+      );
 
       this.sprites = Sprite({
         type: "tombstone",
@@ -43,7 +45,7 @@ export default class TombStone {
               1
             );
           });
-        }
+        },
       });
 
       addShadow(this.sprites, { x: -3 });
