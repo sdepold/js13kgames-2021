@@ -18,6 +18,7 @@
     "imagemin-webpack-plugin": "^2.4.2",
     "mini-css-extract-plugin": "^0.4.1",
     "optimize-css-assets-webpack-plugin": "^5.0.0",
+    "roadroller": "^2.0.0",
     "style-loader": "^0.22.1",
     "webpack": "^4.17.0",
     "webpack-cli": "^3.1.0",

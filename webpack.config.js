@@ -14,21 +14,21 @@ module.exports = {
         use: [
           MiniCssExtractPlugin.loader,
           {
-            loader: "css-loader"
-          }
-        ]
+            loader: "css-loader",
+          },
+        ],
       },
       {
         test: /\.(html)$/,
         use: {
-          loader: "html-loader"
-        }
+          loader: "html-loader",
+        },
       },
       {
         test: /\.gif|\.png$/,
-        use: "base64-inline-loader?limit=10000&name=[name].[ext]"
-      }
-    ]
+        use: "base64-inline-loader?limit=10000&name=[name].[ext]",
+      },
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -39,18 +39,21 @@ module.exports = {
         removeRedundantAttributes: true,
         removeScriptTypeAttributes: true,
         removeStyleLinkTypeAttributes: true,
-        useShortDoctype: true
+        useShortDoctype: true,
       },
-      inlineSource: isProduction && "\.(js|css)$"
+      inlineSource: isProduction && ".(js|css)$",
     }),
     new HtmlWebpackInlineSourcePlugin(),
     new OptimizeCssAssetsPlugin({}),
     new MiniCssExtractPlugin({
-      filename: "[name].css"
-    })
+      filename: "[name].css",
+    }),
   ],
   devServer: {
     stats: "minimal",
-    overlay: true
-  }
+    overlay: true,
+  },
+  optimization: {
+    usedExports: true,
+  },
 };

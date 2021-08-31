@@ -8,29 +8,32 @@ export default class Game {
   }
 
   remove(entity, layerId = 10) {
-    this.layers[layerId] = (this.layers[layerId] || [])
-      .filter(e => e != entity);
+    this.layers[layerId] = (this.layers[layerId] || []).filter(
+      (e) => e != entity
+    );
   }
 
   getSprites(layerFilter = () => true) {
     const layerIds = Object.keys(this.layers).sort().filter(layerFilter);
     const sprites = layerIds
       .sort((a, b) => parseInt(a) - parseInt(b))
-      .flatMap(layerId => {
+      .flatMap((layerId) => {
         const layer = this.layers[layerId];
 
-        return layer.flatMap(o => o.getSprites());
+        return layer.flatMap((o) => o.getSprites());
       });
 
-    return sprites.flat().filter(s => s.isAlive());
+    return sprites.flat().filter((s) => s.isAlive());
   }
 
   /*
     getClosest(player, 'monster');
   */
   getClosest(source, type) {
-    const sprites = this.getSprites(l => l.type !== "tiles");
-    const spritesOfType = sprites.filter(s => s !== source && s.type === type);
+    const sprites = this.getSprites((l) => l.type !== "tiles");
+    const spritesOfType = sprites.filter(
+      (s) => s !== source && s.type === type
+    );
     const getDistance = (a, b) =>
       Math.sqrt(
         Math.pow(Math.abs(a.x - b.x), 2) + Math.pow(Math.abs(a.y - b.y), 2)
@@ -42,13 +45,13 @@ export default class Game {
     return (
       sortedSprites[0] && {
         distance: getDistance(source, sortedSprites[0]),
-        sprite: sortedSprites[0]
+        sprite: sortedSprites[0],
       }
     );
   }
 
   findCurrentPlatform(playerX) {
-    return this.entities.find(entity => {
+    return this.entities.find((entity) => {
       return (
         entity.type === "platform" &&
         entity.x <= playerX &&

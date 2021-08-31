@@ -1,6 +1,6 @@
 import { getCanvas, Sprite } from "kontra";
 
-export default class SplashScreen {
+export default class Scene {
   constructor(content, onClick, options) {
     this.content = content;
     this.onClick = onClick;
@@ -137,7 +137,7 @@ export function getPauseScreen(player, level, onClick) {
       [needSkillRemoval ? removalMessage : keepMessage, { footer: true }]
     ]);
 
-  return new SplashScreen(messages, line => {
+  return new Scene(messages, line => {
     const skill = line && player.skills.find(s => s.title === line.text);
 
     if (!needSkillRemoval) {
@@ -153,7 +153,7 @@ export function getPauseScreen(player, level, onClick) {
 }
 
 export function getEndScreen() {
-  return new SplashScreen(
+  return new Scene(
     [
       "Oh noez :(",
       "",
@@ -167,7 +167,7 @@ export function getEndScreen() {
 }
 
 export function getWinnerScreen(level, player) {
-  return new SplashScreen(
+  return new Scene(
     levelTransitionIntro(player, level)
       .concat(
         [

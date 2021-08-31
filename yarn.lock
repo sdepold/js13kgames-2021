@@ -2103,6 +2103,11 @@ eslint-scope@^4.0.3:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
+esm@^3.2.25:
+  version "3.2.25"
+  resolved "https://registry.yarnpkg.com/esm/-/esm-3.2.25.tgz#342c18c29d56157688ba5ce31f8431fbb795cc10"
+  integrity sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA==
+
 esprima@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.1.tgz#13b04cdb3e6c5d19df91ab6987a8695619b0aa71"
@@ -5524,6 +5529,13 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
   dependencies:
     hash-base "^3.0.0"
     inherits "^2.0.1"
+
+roadroller@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/roadroller/-/roadroller-2.0.0.tgz#2d37bd8a1780ebfa8a649657db6c0d2fe55c1a25"
+  integrity sha512-soMdMCcA6na9QyvufEmjujV6+RXZm2WTbMlG1WbVsev7xMHBUglYSTEKdRIbQwnpyCzaL0QOQ/jyT6V+kKtVVQ==
+  dependencies:
+    esm "^3.2.25"
 
 run-queue@^1.0.0, run-queue@^1.0.3:
   version "1.0.3"
