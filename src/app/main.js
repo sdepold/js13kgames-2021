@@ -1,34 +1,42 @@
-import { GameLoop, getContext, init } from "kontra";
+import { collides, GameLoop, getContext, init, initKeys } from "kontra";
 import { initAudio } from "./audio";
 import Background from "./entities/background";
-import Player from "./entities/player";
+import Player, { GAME } from "./entities/player";
 import Rocket from "./entities/rocket";
 import Game from "./game";
+import Level from "./entities/level";
 import Scene from "./scene";
 import { getStartScreen } from "./scenes/start-screen";
 import { setCanvasSize } from "./misc/helper";
+import Score from "./misc/score";
 
 setCanvasSize();
 init();
+initKeys();
 
-let followShip = true;
 const game = new Game();
 const player = new Player();
 const rocket = new Rocket({
   onDestinationReached() {
     game.add(player);
     player.leaveRocket(rocket);
+    setTimeout(() => {
+      game.remove(rocket);
+    }, 20000);
   },
 });
 
 game.loaded = true;
 
+let level;
 const startScreen = new Scene(
   getStartScreen(),
   () => {
     const initGame = () => {
+      level = new Level();
+
       startScreen.hide();
-      game.add(level.getMonsters(player));
+      game.add(level);
     };
     initAudio().then(initGame, initGame);
   },
@@ -40,9 +48,18 @@ const startScreen = new Scene(
 game.add(new Background());
 game.add(startScreen, 12);
 game.add(rocket);
+game.add(new Score(player));
 
 GameLoop({
   update() {
+    if (level && player && player.state === GAME) {
+      level.getSprites().forEach((pad) => {
+        if (collides(player.sprite, pad)) {
+          pad.color = "red";
+          player.jump();
+        }
+      });
+    }
     game.getSprites().forEach((sprite) => sprite.update && sprite.update());
   },
   render() {

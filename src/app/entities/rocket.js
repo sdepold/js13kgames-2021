@@ -21,13 +21,19 @@ export default class Rocket {
         rotation: degToRad(-45),
         update() {
           if (this.y <= (canvas.height / 2) * 0.75) {
-            this.ddy = this.dy = 0;
             if (!rocket.destinationedReachedTrigger) {
+              this.ddy = this.dy = 0;
               rocket.onDestinationReached();
               rocket.destinationedReachedTrigger = true;
+              this.dy = 0.1;
+              this.dx = -0.2;
+
+              setInterval(() => {
+                this.rotation += 0.005;
+              }, 10);
             }
           }
-          if (this.dy >= 0) {
+          if (!rocket.destinationedReachedTrigger && this.dy >= 0) {
             this.dy = 0.01;
             this.ddy = 0;
           }

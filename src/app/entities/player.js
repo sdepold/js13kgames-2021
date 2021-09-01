@@ -1,8 +1,19 @@
-import { radToDeg, Sprite, Text } from "kontra";
+import { keyPressed, radToDeg, Text } from "kontra";
+import { sub } from "../pubsub";
+
+export const TEASER = "teaser";
+export const GAME = "game";
+export const JUMP = "jump";
 
 export default class Player {
   constructor() {
     this.size = 1;
+    this.state = TEASER;
+    this.score = 0;
+
+    sub("pad:disappear", () => {
+      this.score++;
+    });
   }
   getSprites() {
     const player = this;
@@ -19,15 +30,36 @@ export default class Player {
         dRotation: 0.03,
         anchor: { x: 0.5, y: 0.5 },
         update() {
-          player.dSize += player.ddSize;
-          this.font = `${~~player.size}px serif`;
-          this.rotation += this.dRotation;
+          if (player.state === TEASER) {
+            player.dSize += player.ddSize;
+            this.font = `${~~player.size}px serif`;
+            this.rotation += this.dRotation;
 
-          if (player.size < 20) {
-            player.size += player.dSize;
-          } else if (radToDeg(this.rotation) % 360 < 10) {
-            this.rotation = this.dRotation = 0;
-            this.dy = 0;
+            if (player.size < 20) {
+              player.size += player.dSize;
+            } else if (radToDeg(this.rotation) % 360 < 10) {
+              this.rotation = this.dRotation = 0;
+              this.dy = 0;
+              this.ddy = 0.02;
+              player.state = GAME;
+            }
+          } else if (player.state === JUMP) {
+            if (keyPressed("left")) {
+              this.x -= 3;
+            }
+            if (keyPressed("right")) {
+              this.x += 3;
+            }
+            if (this.dy >= 0) {
+              player.state = GAME;
+            }
+          } else if (player.state === GAME) {
+            if (keyPressed("left")) {
+              this.x -= 3;
+            }
+            if (keyPressed("right")) {
+              this.x += 3;
+            }
           }
 
           this.advance();
@@ -35,6 +67,11 @@ export default class Player {
       });
 
     return [this.sprite];
+  }
+
+  jump() {
+    this.state = JUMP;
+    this.sprite.dy = -1;
   }
 
   leaveRocket(rocket) {

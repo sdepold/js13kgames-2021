@@ -1,191 +1,53 @@
-import {TileEngine} from "kontra";
-import devil from "./monster/devil";
-import skullFace from "./monster/skull-face";
-import seedy from "./monster/seedy";
+import { getCanvas, getContext, Sprite } from "kontra";
+import { pub } from "../pubsub";
 
-const tileSize = 16.0;
-const renderedTileSize = 32;
-const monstersDifficultyMap = {
-  //keep all skills
-  "10": player => [
-    seedy(player),
-    skullFace(player),
-    skullFace(player),
-    devil(player)
-  ],
-  //remove 1 out of 4 skills
-  "9": player => [
-    devil(player),
-    devil(player),
-    skullFace(player),
-    skullFace(player)
-  ],
-  //keep all skills
-  "8": player => [
-    devil(player),
-    seedy(player)
-  ],
-  //remove 1 out of 3 remaining skills
-  "7": player => [
-    skullFace(player),
-    skullFace(player),
-    skullFace(player),
-    skullFace(player)
-  ],
-  //keep all skills
-  "6": player => [
-    seedy(player),
-    seedy(player),
-    skullFace(player),
-  ],
-  //remove 1 out of 2 remaining skills
-  "5": player => [
-    skullFace(player),
-    skullFace(player),
-    skullFace(player),
-    skullFace(player),
-  ],
-  //keep all skills
-  "4": player => [
-    devil(player),
-    devil(player)
-  ],
-  //remove 1 out of 1 remaining skills
-  "3": player => [
-    seedy(player),
-    skullFace(player),
-    skullFace(player)
-  ],
-  //keep all skills
-  "2": player => [
-    devil(player)
-  ],
-  // win the game!
-  "1": player => [
-    seedy(player),
-    skullFace(player)
-  ]
-};
+export const EASY = "easy";
+export const MEDIUM = "medium";
+export const HARD = "hard";
 
 export default class Level {
-  constructor(width, height, difficulty = 10) {
-    this.height = ~~(height / renderedTileSize) + 1;
-    this.width = ~~(width / renderedTileSize) - 1;
-    this.difficulty = 10;
+  constructor({ difficulty = EASY } = {}) {
+    this.difficulty = difficulty;
   }
 
-  getMonsters(player) {
-    return monstersDifficultyMap[this.difficulty](player);
-  }
-
-  reset() {
-    this.setData();
-    this.tileEngine = TileEngine({
-      type: "tiles",
-      isAlive: () => true,
-      // tile size
-      tilewidth: tileSize,
-      tileheight: tileSize,
-
-      // map size in tiles
-      width: this.width + 1,
-      height: this.height,
-
-      // tileset object
-      tilesets: [
-        {
-          firstgid: 1,
-          image: document.querySelector("#ladder")
-        }
-      ],
-
-      // layer object
-      layers: [
-        {
-          name: "ground",
-          data: this.tilesGround
-        },
-        {
-          name: "walls",
-          data: this.tilesWalls
-        }
-      ]
-    });
+  get padCount() {
+    return { [EASY]: 8, [MEDIUM]: 6, [HARD]: 4 }[this.difficulty];
   }
 
   getSprites() {
-    if (!this.tileEngine) {
-      this.reset();
-    }
+    if (!this.sprites) {
+      const width = getCanvas().width;
+      const height = getCanvas().height;
+      const sprites = [];
 
-    return [this.tileEngine];
-  }
+      console.log(this.padCount);
 
-  setData() {
-    let groundTiles = [];
-    let decorTiles = [];
+      for (let i = 0; i < this.padCount; i++) {
 
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x <= this.width; x++) {
-        const floorTileFrame =
-          1 + (Math.random() < 0.2 ? ~~(Math.random() * 2) : 0);
-        const wallTileFrame =
-          1 + (Math.random() < 0.2 ? 14 + ~~Math.random() : 3);
-
-        if (y === 0) {
-          decorTiles.push(0);
-          if (x === 0) {
-            groundTiles.push(12);
-          } else if (x === this.width) {
-            groundTiles.push(13);
-          } else {
-            groundTiles.push(12);
-          }
-        } else if (y === 1) {
-          decorTiles.push(0);
-
-          if (x === 0) {
-            groundTiles.push(8);
-          } else if (x === this.width) {
-            groundTiles.push(9);
-          } else {
-            groundTiles.push(wallTileFrame);
-          }
-        } else if (y === this.height - 2) {
-          groundTiles.push(floorTileFrame);
-
-          if (x === 0) {
-            decorTiles.push(6);
-          } else if (x === this.width) {
-            decorTiles.push(7);
-          } else {
-            decorTiles.push(13);
-          }
-        } else if (y === this.height - 1) {
-          decorTiles.push(0);
-
-          if (x === 0) {
-            groundTiles.push(3);
-          } else if (x === this.width) {
-            groundTiles.push(5);
-          } else {
-            groundTiles.push(wallTileFrame);
-          }
-        } else {
-          groundTiles.push(floorTileFrame);
-
-          if (x === 0) {
-            decorTiles.push(10);
-          } else if (x === this.width) {
-            decorTiles.push(11);
-          } else {
-            decorTiles.push(0);
-          }
-        }
+        console.log(height / 2, ~~(height / 2 / i), i);
+        sprites.push(
+          Sprite({
+            x: ~~(Math.random() * (width / 2)),
+            y: ~~(i * ((height / 2) / this.padCount)),
+            dy: 0.5,
+            width: ~~(width / 6),
+            height: 2,
+            color: "#999",
+            update() {
+              if (this.y + this.height > height / 2) {
+                pub("pad:disappear", this);
+                this.y = -10;
+                this.x = ~~(Math.random() * (width / 2));
+              }
+              this.advance();
+            },
+          })
+        );
       }
+
+      this.sprites = sprites;
     }
 
-    this.tilesGround = groundTiles;
-    this.tilesWalls = decorTiles;
+    return this.sprites;
   }
 }
