@@ -9,6 +9,7 @@ import Scene from "./scene";
 import { getStartScreen } from "./scenes/start-screen";
 import { setCanvasSize } from "./misc/helper";
 import Score from "./misc/score";
+import Bla, { initDeviceControl } from "./device-control";
 
 setCanvasSize();
 init();
@@ -31,14 +32,16 @@ game.loaded = true;
 let level;
 const startScreen = new Scene(
   getStartScreen(),
-  () => {
+  async () => {
     const initGame = () => {
       level = new Level();
 
       startScreen.hide();
       game.add(level);
     };
-    initAudio().then(initGame, initGame);
+    await initAudio();
+    await initDeviceControl();
+    initGame();
   },
   {
     fontSize: 14,

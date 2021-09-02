@@ -20,11 +20,7 @@ export default class Level {
       const height = getCanvas().height;
       const sprites = [];
 
-      console.log(this.padCount);
-
       for (let i = 0; i < this.padCount; i++) {
-
-        console.log(height / 2, ~~(height / 2 / i), i);
         sprites.push(
           Sprite({
             x: ~~(Math.random() * (width / 2)),

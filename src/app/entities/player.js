@@ -10,9 +10,15 @@ export default class Player {
     this.size = 1;
     this.state = TEASER;
     this.score = 0;
+    this.acceleration;
 
     sub("pad:disappear", () => {
       this.score++;
+    });
+    sub("device:tilt", (acceleration) => {
+      if (this.sprite) {
+        this.sprite.dx = acceleration.x / 3;
+      }
     });
   }
   getSprites() {
@@ -30,6 +36,15 @@ export default class Player {
         dRotation: 0.03,
         anchor: { x: 0.5, y: 0.5 },
         update() {
+          function handleMovement() {
+            if (keyPressed("left")) {
+              this.x -= 3;
+            }
+            if (keyPressed("right")) {
+              this.x += 3;
+            }
+          }
+
           if (player.state === TEASER) {
             player.dSize += player.ddSize;
             this.font = `${~~player.size}px serif`;
@@ -44,22 +59,13 @@ export default class Player {
               player.state = GAME;
             }
           } else if (player.state === JUMP) {
-            if (keyPressed("left")) {
-              this.x -= 3;
-            }
-            if (keyPressed("right")) {
-              this.x += 3;
-            }
+            handleMovement();
+
             if (this.dy >= 0) {
               player.state = GAME;
             }
           } else if (player.state === GAME) {
-            if (keyPressed("left")) {
-              this.x -= 3;
-            }
-            if (keyPressed("right")) {
-              this.x += 3;
-            }
+            handleMovement();
           }
 
           this.advance();
