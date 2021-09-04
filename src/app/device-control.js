@@ -23,7 +23,6 @@ export function initDeviceControl() {
           () => resolve(false)
         );
     } else {
-      alert("DeviceMotionEvent is not defined");
       resolve(false);
     }
   });

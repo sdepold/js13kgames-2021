@@ -1,4 +1,4 @@
-import { keyPressed, radToDeg, Text } from "kontra";
+import { getCanvas, keyPressed, radToDeg, Text } from "kontra";
 import { sub } from "../pubsub";
 
 export const TEASER = "teaser";
@@ -21,6 +21,25 @@ export default class Player {
       }
     });
   }
+  handleMovement() {
+    if (keyPressed("left")) {
+      this.sprite.x -= 3;
+    }
+    if (keyPressed("right")) {
+      this.sprite.x += 3;
+    }
+  }
+
+  checkBounderies() {
+    const canvas = getCanvas();
+
+    if (this.sprite.x < 0) {
+      this.sprite.x = canvas.width / 2;
+    } else if (this.sprite.x > canvas.width / 2) {
+      this.sprite.x = 0;
+    }
+  }
+
   getSprites() {
     const player = this;
 
@@ -36,15 +55,6 @@ export default class Player {
         dRotation: 0.03,
         anchor: { x: 0.5, y: 0.5 },
         update() {
-          function handleMovement() {
-            if (keyPressed("left")) {
-              this.x -= 3;
-            }
-            if (keyPressed("right")) {
-              this.x += 3;
-            }
-          }
-
           if (player.state === TEASER) {
             player.dSize += player.ddSize;
             this.font = `${~~player.size}px serif`;
@@ -55,17 +65,20 @@ export default class Player {
             } else if (radToDeg(this.rotation) % 360 < 10) {
               this.rotation = this.dRotation = 0;
               this.dy = 0;
-              this.ddy = 0.02;
+              this.ddy = 0.075;
               player.state = GAME;
             }
-          } else if (player.state === JUMP) {
-            handleMovement();
+          } else {
+            player.handleMovement();
+            player.checkBounderies();
 
-            if (this.dy >= 0) {
-              player.state = GAME;
+            if (player.state === JUMP) {
+              if (this.dy >= 0) {
+                player.state = GAME;
+              }
+            } else if (player.state === GAME) {
+              // non-jump specifics
             }
-          } else if (player.state === GAME) {
-            handleMovement();
           }
 
           this.advance();
@@ -77,7 +90,7 @@ export default class Player {
 
   jump() {
     this.state = JUMP;
-    this.sprite.dy = -1;
+    this.sprite.dy = -2;
   }
 
   leaveRocket(rocket) {
