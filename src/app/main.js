@@ -9,7 +9,9 @@ import Scene from "./scene";
 import { getStartScreen } from "./scenes/start-screen";
 import { setCanvasSize } from "./misc/helper";
 import Score from "./misc/score";
-import Bla, { initDeviceControl } from "./device-control";
+import { initDeviceControl } from "./device-control";
+import { sub } from "./pubsub";
+import { getEndScreen } from "./scenes/end-screen";
 
 setCanvasSize();
 init();
@@ -39,8 +41,11 @@ const startScreen = new Scene(
       startScreen.hide();
       game.add(level);
     };
+    console.log("Init audio...");
     await initAudio();
+    console.log("Init device control...");
     await initDeviceControl();
+    console.log("Init game...");
     initGame();
   },
   {
@@ -52,6 +57,10 @@ game.add(new Background());
 game.add(startScreen, 12);
 game.add(rocket);
 game.add(new Score(player));
+
+sub("player:death", (player) => {
+  game.add(getEndScreen(player), 13);
+});
 
 GameLoop({
   update() {

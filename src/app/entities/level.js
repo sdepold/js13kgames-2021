@@ -1,5 +1,5 @@
 import { getCanvas, getContext, Sprite } from "kontra";
-import { pub } from "../pubsub";
+import { pub, sub } from "../pubsub";
 
 export const EASY = "easy";
 export const MEDIUM = "medium";
@@ -8,6 +8,11 @@ export const HARD = "hard";
 export default class Level {
   constructor({ difficulty = EASY } = {}) {
     this.difficulty = difficulty;
+    this.animate = true;
+
+    sub("player:death", () => {
+      this.animate = false;
+    });
   }
 
   get padCount() {
@@ -15,6 +20,8 @@ export default class Level {
   }
 
   getSprites() {
+    const level = this;
+
     if (!this.sprites) {
       const width = getCanvas().width;
       const height = getCanvas().height;
@@ -24,18 +31,20 @@ export default class Level {
         sprites.push(
           Sprite({
             x: ~~(Math.random() * (width / 2)),
-            y: ~~(i * ((height / 2) / this.padCount)),
+            y: ~~(i * (height / 2 / this.padCount)),
             dy: 0.5,
             width: ~~(width / 6),
             height: 2,
             color: "#999",
             update() {
-              if (this.y + this.height > height / 2) {
-                pub("pad:disappear", this);
-                this.y = -10;
-                this.x = ~~(Math.random() * (width / 2));
+              if (level.animate) {
+                if (this.y + this.height > height / 2) {
+                  pub("pad:disappear", this);
+                  this.y = -10;
+                  this.x = ~~(Math.random() * (width / 2));
+                }
+                this.advance();
               }
-              this.advance();
             },
           })
         );

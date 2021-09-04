@@ -1,5 +1,5 @@
 import { getCanvas, keyPressed, radToDeg, Text } from "kontra";
-import { sub } from "../pubsub";
+import { pub, sub } from "../pubsub";
 
 export const TEASER = "teaser";
 export const GAME = "game";
@@ -11,6 +11,7 @@ export default class Player {
     this.state = TEASER;
     this.score = 0;
     this.acceleration;
+    this.dead = false;
 
     sub("pad:disappear", () => {
       this.score++;
@@ -37,6 +38,9 @@ export default class Player {
       this.sprite.x = canvas.width / 2;
     } else if (this.sprite.x > canvas.width / 2) {
       this.sprite.x = 0;
+    }
+    if (!this.dead && this.sprite.y >= canvas.height / 2) {
+      pub("player:death", this);
     }
   }
 

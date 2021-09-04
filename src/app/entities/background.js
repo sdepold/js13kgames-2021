@@ -1,11 +1,5 @@
-import {
-  degToRad,
-  Sprite,
-  GameObject,
-  getCanvas,
-  getContext,
-  Text,
-} from "kontra";
+import { degToRad, getCanvas, Sprite } from "kontra";
+import { sub } from "../pubsub";
 
 function strokeStar(ctx, rot, x, y, r, n, inset) {
   ctx.beginPath();
@@ -24,7 +18,16 @@ function strokeStar(ctx, rot, x, y, r, n, inset) {
 }
 
 export default class Background {
+  constructor() {
+    this.animate = true;
+    sub("player:death", () => {
+      this.animate = false;
+    });
+  }
+
   getSprites() {
+    const background = this;
+
     this.sprites = (this.sprites || []).filter((s) => s.isAlive());
 
     if (Math.random() < 0.05) {
@@ -38,7 +41,7 @@ export default class Background {
           dy: 0.1 + Math.random() * 0.5,
           textAlign: "center",
           rot: degToRad(0),
-          dRotation: Math.random() ,
+          dRotation: Math.random(),
           render() {
             this.context.save();
             this.context.fillStyle = `#${color}`;
@@ -47,11 +50,13 @@ export default class Background {
             this.context.restore();
           },
           update() {
-            if (this.y >= canvas.height / 2) {
-              this.ttl = 0;
+            if (background.animate) {
+              if (this.y >= canvas.height / 2) {
+                this.ttl = 0;
+              }
+              this.rot += this.dRotation;
+              this.advance();
             }
-            this.rot += this.dRotation;
-            this.advance();
           },
         })
       );
