@@ -79,6 +79,7 @@ export default class Player {
             if (player.state === JUMP) {
               if (this.dy >= 0) {
                 player.state = GAME;
+                pub("player:superjump:stop");
               }
             } else if (player.state === GAME) {
               // non-jump specifics
@@ -92,9 +93,13 @@ export default class Player {
     return [this.sprite];
   }
 
-  jump() {
+  jump(pad) {
     this.state = JUMP;
-    this.sprite.dy = -2;
+    this.sprite.dy = pad.type === "trampoline" ? -4 : -2;
+
+    if (pad.type === "trampoline") {
+      pub("player:superjump:start");
+    }
   }
 
   leaveRocket(rocket) {

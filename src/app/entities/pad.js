@@ -9,9 +9,17 @@ export default class Pad {
   constructor({ y }) {
     this.animate = true;
     this.initialY = y;
+    this.speed = 0.5;
 
     sub("player:death", () => {
       this.animate = false;
+    });
+    sub("player:superjump:start", () => {
+      this.speed = 5 * 0.5;
+    });
+
+    sub("player:superjump:stop", () => {
+      this.speed = 0.5;
     });
   }
 
@@ -26,7 +34,7 @@ export default class Pad {
           type: "pad",
           x: ~~(Math.random() * (width / 2)),
           y: pad.initialY,
-          dy: 0.5,
+          dy: pad.speed,
           width: ~~(width / 6),
           height: 2,
           color: "#999",
@@ -37,6 +45,8 @@ export default class Pad {
                 this.y = -10;
                 this.x = ~~(Math.random() * (width / 2));
               }
+
+              this.dy = pad.speed;
               this.advance();
             }
           },

@@ -19,9 +19,21 @@ function strokeStar(ctx, rot, x, y, r, n, inset) {
 
 export default class Background {
   constructor() {
+    const originalSpeed = 0.1 + Math.random() * 0.5;
+
     this.animate = true;
+    this.speed = originalSpeed;
+
     sub("player:death", () => {
       this.animate = false;
+    });
+
+    sub("player:superjump:start", () => {
+      this.speed = 5 * originalSpeed;
+    });
+
+    sub("player:superjump:stop", () => {
+      this.speed = originalSpeed;
     });
   }
 
@@ -38,7 +50,7 @@ export default class Background {
         Sprite({
           x: ~~(Math.random() * (getCanvas().width / 2)),
           y: -10,
-          dy: 0.1 + Math.random() * 0.5,
+          dy: background.speed,
           textAlign: "center",
           rot: degToRad(0),
           dRotation: Math.random(),
@@ -55,6 +67,8 @@ export default class Background {
                 this.ttl = 0;
               }
               this.rot += this.dRotation;
+              this.dy = background.speed;
+
               this.advance();
             }
           },

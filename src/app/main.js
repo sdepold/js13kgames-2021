@@ -68,7 +68,7 @@ GameLoop({
       level.getSprites().forEach((pad) => {
         if (collides(player.sprite, pad)) {
           pad.color = "red";
-          player.jump();
+          player.jump(pad);
         }
       });
     }
