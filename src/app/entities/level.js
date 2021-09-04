@@ -1,5 +1,6 @@
 import { getCanvas, getContext, Sprite } from "kontra";
 import { pub, sub } from "../pubsub";
+import Pad from "./pad";
 
 export const EASY = "easy";
 export const MEDIUM = "medium";
@@ -20,39 +21,19 @@ export default class Level {
   }
 
   getSprites() {
-    const level = this;
-
-    if (!this.sprites) {
-      const width = getCanvas().width;
+    if (!this.pads) {
       const height = getCanvas().height;
-      const sprites = [];
+      const pads = [];
 
       for (let i = 0; i < this.padCount; i++) {
-        sprites.push(
-          Sprite({
-            x: ~~(Math.random() * (width / 2)),
-            y: ~~(i * (height / 2 / this.padCount)),
-            dy: 0.5,
-            width: ~~(width / 6),
-            height: 2,
-            color: "#999",
-            update() {
-              if (level.animate) {
-                if (this.y + this.height > height / 2) {
-                  pub("pad:disappear", this);
-                  this.y = -10;
-                  this.x = ~~(Math.random() * (width / 2));
-                }
-                this.advance();
-              }
-            },
-          })
-        );
+        const y = ~~(i * (height / 2 / this.padCount));
+        
+        pads.push(new Pad({ y }));
       }
 
-      this.sprites = sprites;
+      this.pads = pads;
     }
 
-    return this.sprites;
+    return this.pads.flatMap((pad) => pad.getSprites());
   }
 }
