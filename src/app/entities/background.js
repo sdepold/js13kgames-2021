@@ -1,28 +1,38 @@
 import { degToRad, getCanvas, Sprite } from "kontra";
 import { sub } from "../pubsub";
 
-function strokeStar(ctx, rot, x, y, r, n, inset) {
+function star(ctx, R, cX, cY, N) {
   ctx.beginPath();
-  ctx.translate(x, y);
-  ctx.moveTo(0, 0 - r);
-  ctx.rotate(degToRad(rot));
-  for (var i = 0; i < n; i++) {
-    ctx.rotate(Math.PI / n);
-    ctx.lineTo(0, 0 - r * inset);
-    ctx.rotate(Math.PI / n);
-    ctx.lineTo(0, 0 - r);
+  ctx.moveTo(cX + R, cY);
+  for (var i = 1; i <= N * 2; i++) {
+    if (i % 2 == 0) {
+      var theta = (i * (Math.PI * 2)) / (N * 2);
+      var x = cX + R * Math.cos(theta);
+      var y = cY + R * Math.sin(theta);
+    } else {
+      var theta = (i * (Math.PI * 2)) / (N * 2);
+      var x = cX + (R / 2) * Math.cos(theta);
+      var y = cY + (R / 2) * Math.sin(theta);
+    }
+
+    ctx.lineTo(x, y);
   }
   ctx.closePath();
-  ctx.fill();
   ctx.stroke();
 }
 
 export default class Background {
   constructor() {
     const originalSpeed = 0.1 + Math.random() * 0.5;
+    const height = getCanvas().height / 2;
 
     this.animate = true;
     this.speed = originalSpeed;
+    this.sprites = [];
+
+    for (let i = 0; i < 100; i++) {
+      this.sprites.push(this.createStarSprite(~~(Math.random() * height)));
+    }
 
     sub("player:death", () => {
       this.animate = false;
@@ -37,43 +47,44 @@ export default class Background {
     });
   }
 
-  getSprites() {
+  createStarSprite(y = -10) {
     const background = this;
+    const size = ~~(Math.random() * 6);
+    const color = 111 + ~~(Math.random() * 5) * 111;
 
+    return Sprite({
+      x: ~~(Math.random() * (getCanvas().width / 2)),
+      y,
+      dy: background.speed,
+      textAlign: "center",
+      rot: degToRad(0),
+      dRotation: Math.random(),
+      render() {
+        this.context.save();
+        this.context.fillStyle = `#${color}`;
+        this.context.strokeStyle = `#${color + 222}`;
+        star(this.context, size, this.x, this.y, 5);
+        this.context.restore();
+      },
+      update() {
+        if (background.animate) {
+          if (this.y >= canvas.height / 2) {
+            this.ttl = 0;
+          }
+          this.rot += this.dRotation;
+          this.dy = background.speed;
+
+          this.advance();
+        }
+      },
+    });
+  }
+
+  getSprites() {
     this.sprites = (this.sprites || []).filter((s) => s.isAlive());
 
-    if (Math.random() < 0.05) {
-      const size = ~~(Math.random() * 6);
-      const color = 111 + ~~(Math.random() * 5) * 111;
-
-      this.sprites.push(
-        Sprite({
-          x: ~~(Math.random() * (getCanvas().width / 2)),
-          y: -10,
-          dy: background.speed,
-          textAlign: "center",
-          rot: degToRad(0),
-          dRotation: Math.random(),
-          render() {
-            this.context.save();
-            this.context.fillStyle = `#${color}`;
-            this.context.strokeStyle = `#${color + 222}`;
-            strokeStar(this.context, this.rot, this.x, this.y, size, 5, 2);
-            this.context.restore();
-          },
-          update() {
-            if (background.animate) {
-              if (this.y >= canvas.height / 2) {
-                this.ttl = 0;
-              }
-              this.rot += this.dRotation;
-              this.dy = background.speed;
-
-              this.advance();
-            }
-          },
-        })
-      );
+    if (Math.random() < 0.1) {
+      this.sprites.push(this.createStarSprite());
     }
 
     return this.sprites;
