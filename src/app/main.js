@@ -42,7 +42,7 @@ const startScreen = new Scene(
       game.add(level);
     };
     console.log("Init audio...");
-    await initAudio();
+    await initAudio().catch(console.log);
     console.log("Init device control...");
     await initDeviceControl();
     console.log("Init game...");

@@ -13,8 +13,11 @@ export default class Player {
     this.acceleration;
     this.dead = false;
 
-    sub("pad:disappear", () => {
-      this.score++;
+    sub("pad:disappear", (pad) => {
+      this.score += pad.config.padScore;
+      if (this.score === 30 || this.score === 100) {
+        pub("level:increase");
+      }
     });
     sub("device:tilt", (acceleration) => {
       if (this.sprite) {
