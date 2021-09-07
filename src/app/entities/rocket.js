@@ -1,8 +1,14 @@
 import { degToRad, getCanvas, Text } from "kontra";
+import { sub } from "../pubsub";
 
 export default class Rocket {
   constructor({ onDestinationReached }) {
     this.onDestinationReached = onDestinationReached;
+    this.gameStarted = false;
+
+    sub("game:start", () => {
+      this.gameStarted = true;
+    });
   }
   getSprites() {
     if (!this.sprite) {
@@ -21,7 +27,7 @@ export default class Rocket {
         rotation: degToRad(-45),
         update() {
           if (this.y <= (canvas.height / 2) * 0.75) {
-            if (!rocket.destinationedReachedTrigger) {
+            if (rocket.gameStarted && !rocket.destinationedReachedTrigger) {
               this.ddy = this.dy = 0;
               rocket.onDestinationReached();
               rocket.destinationedReachedTrigger = true;

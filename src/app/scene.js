@@ -100,6 +100,7 @@ export default class Scene {
         },
         update() {
           this.advance();
+
           if (this.opacity < 0.75) {
             this.opacity += 0.02;
           }
@@ -110,72 +111,3 @@ export default class Scene {
     return [this.sprite];
   }
 }
-
-// function levelTransitionIntro(player, level) {
-//   const shadow = player.skills.find(s => s.type === "shadow");
-
-//   return [
-//     [`You finished level ${level.difficulty}!`, { fontSize: 14 }],
-//     "",
-//     ["Current player stats", { underline: true }],
-//     `❤ ${player.healthPoints} / ${player.baseHealth}`,
-//     `🔪 ${player.d}` + (shadow ? ` + ${shadow.d}` : "")
-//   ];
-// }
-
-// export function getPauseScreen(player, level, onClick) {
-//   const needSkillRemoval = level.difficulty % 2 === 1;
-//   const shadow = player.skills.find(s => s.type === "shadow");
-//   const removalMessage = "Remove skill and resume run!";
-//   const keepMessage = "You can keep all skills this round!";
-//   const messages = levelTransitionIntro(player, level)
-//     .concat(["", ["Player skills", { underline: true }]])
-//     .concat(player.skills.map(s => s.title))
-//     .concat([
-//       [needSkillRemoval ? removalMessage : keepMessage, { footer: true }]
-//     ]);
-
-//   return new Scene(messages, line => {
-//     const skill = line && player.skills.find(s => s.title === line.text);
-
-//     if (!needSkillRemoval) {
-//       return onClick();
-//     }
-
-//     if (skill) {
-//       skill.undo && skill.undo();
-//       player.skills = player.skills.filter(s => s !== skill);
-//       onClick();
-//     }
-//   });
-// }
-
-// export function getEndScreen() {
-//   return new Scene(
-//     [
-//       "Oh noez :(",
-//       "",
-//       ["You died!", { fontSize: 20 }],
-//       ["Press to restart!", { footer: true }]
-//     ],
-//     () => {
-//       document.location.reload();
-//     }
-//   );
-// }
-
-// export function getWinnerScreen(level, player) {
-//   return new Scene(
-//     levelTransitionIntro(player, level)
-//       .concat(
-//         [
-//           "",
-//           "",
-//           ["Congratulations!", { fontSize: 20 }],
-//           "You won the game!",
-//           ["Press to restart!", { footer: true }]
-//         ])
-//     , () => {
-//       document.location.reload();
-//     });
-// }

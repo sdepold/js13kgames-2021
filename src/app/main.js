@@ -10,7 +10,7 @@ import { getStartScreen } from "./scenes/start-screen";
 import { setCanvasSize } from "./misc/helper";
 import Score from "./misc/score";
 import { initDeviceControl } from "./device-control";
-import { sub } from "./pubsub";
+import { pub, sub } from "./pubsub";
 import { getEndScreen } from "./scenes/end-screen";
 
 setCanvasSize();
@@ -32,27 +32,21 @@ const rocket = new Rocket({
 game.loaded = true;
 
 let level;
-const startScreen = new Scene(
-  getStartScreen(),
-  async () => {
-    const initGame = () => {
-      level = new Level();
+const startScreen = getStartScreen(async () => {
+  const initGame = () => {
+    level = new Level();
 
-      startScreen.hide();
-      game.add(level);
-    };
-    console.log("Init audio...");
-    await initAudio().catch(console.log);
-    console.log("Init device control...");
-    await initDeviceControl();
-    console.log("Init game...");
-    initGame();
-  },
-  {
-    fontSize: 14,
-    lineHeight: 30,
-  }
-);
+    startScreen.hide();
+    game.add(level);
+    pub("game:start");
+  };
+  console.log("Init audio...");
+  await initAudio().catch(console.log);
+  console.log("Init device control...");
+  await initDeviceControl();
+  console.log("Init game...");
+  initGame();
+});
 game.add(new Background());
 game.add(startScreen, 12);
 game.add(rocket);

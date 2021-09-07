@@ -1,19 +1,29 @@
 import Scene from "../scene";
 
 export function getEndScreen(player) {
+  const tweetText = "Tell the world";
   return new Scene(
     [
-      "Oh noez :(",
+      "Thanks for playing",
+      ["SPACE JUMP", { fontSize: 20 }],
       "",
-      ["You died!", { fontSize: 20 }],
+      ["Final score: " + player.score, { fontSize: 16 }],
       "",
       "",
-      "",
-      [`Your score: ${player.score}`, { fontSize: 20 }],
+      ["Try again", { fontSize: 18 }],
+      [tweetText, { fontSize: 18 }],
       ["Press to restart!", { footer: true }],
     ],
-    () => {
-      document.location.reload();
+    (line) => {
+      if (line && line.text === tweetText) {
+        window.open(
+          `https://twitter.com/intent/tweet?url=https%3A%2F%2Fjs13kgames.com&via=sdepold&text=I%20scored%20${player.score}%20points%20at%20Space%20Jump%21&hashtags=js13k`,
+          "game",
+          "width=800,height=600"
+        );
+      } else {
+        document.location.reload();
+      }
     }
   );
 }
