@@ -1,4 +1,11 @@
-import { getCanvas, keyPressed, radToDeg, Text } from "kontra";
+import {
+  getCanvas,
+  keyPressed,
+  radToDeg,
+  Sprite,
+  SpriteSheet,
+  Text,
+} from "kontra";
 import { pub, sub } from "../pubsub";
 
 export const TEASER = "teaser";
@@ -7,11 +14,27 @@ export const JUMP = "jump";
 
 export default class Player {
   constructor() {
+    const image = document.querySelector("#char");
+
     this.size = 1;
     this.state = TEASER;
     this.score = 0;
     this.acceleration;
     this.dead = false;
+    this.spriteSheet = SpriteSheet({
+      image: image,
+      frameWidth: 28,
+      frameHeight: 37,
+      animations: {
+        walk: {
+          frames: "0..3",
+          frameRate: 8,
+        },
+        jump: {
+          frames: "1..1",
+        },
+      },
+    });
 
     sub("pad:disappear", (pad) => {
       this.score += pad.config.padScore;
@@ -19,6 +42,7 @@ export default class Player {
         pub("level:increase");
       }
     });
+
     sub("device:tilt", (acceleration) => {
       if (this.sprite) {
         this.sprite.dx = acceleration.x / 3;
@@ -28,9 +52,11 @@ export default class Player {
   handleMovement() {
     if (keyPressed("left")) {
       this.sprite.x -= 3;
+      this.sprite.scaleX = 1;
     }
     if (keyPressed("right")) {
       this.sprite.x += 3;
+      this.sprite.scaleX = -1;
     }
   }
 
@@ -49,43 +75,56 @@ export default class Player {
 
   getSprites() {
     const player = this;
+    const height = 31;
+    const width = 28;
 
     this.sprite =
       this.sprite ||
-      Text({
+      Sprite({
         x: this.x,
         y: this.y,
+        width: 1,
+        height: 1,
         dy: -0.25,
-        text: "👨‍🚀",
-        font: "1px serif",
+        animations: this.spriteSheet.animations,
         rotation: 0,
         dRotation: 0.03,
         anchor: { x: 0.5, y: 0.5 },
+        direction: "right",
         update() {
           if (player.state === TEASER) {
+            this.playAnimation("jump");
             player.dSize += player.ddSize;
             this.font = `${~~player.size}px serif`;
             this.rotation += this.dRotation;
 
-            if (player.size < 20) {
-              player.size += player.dSize;
-            } else if (radToDeg(this.rotation) % 360 < 10) {
-              this.rotation = this.dRotation = 0;
-              this.dy = 0;
-              this.ddy = 0.075;
-              player.state = GAME;
+            if (this.width < width) {
+              this.width += 0.1;
+              this.height += 0.1;
+            } else {
+              this.width = width;
+              this.height = height;
+
+              if (radToDeg(this.rotation) % 360 < 10) {
+                this.rotation = this.dRotation = 0;
+                this.dy = 0;
+                this.ddy = 0.075;
+                player.state = GAME;
+              }
             }
           } else {
             player.handleMovement();
             player.checkBounderies();
 
             if (player.state === JUMP) {
+              this.playAnimation("jump");
+
               if (this.dy >= 0) {
                 player.state = GAME;
                 pub("player:superjump:stop");
               }
             } else if (player.state === GAME) {
-              // non-jump specifics
+              this.playAnimation("walk");
             }
           }
 
