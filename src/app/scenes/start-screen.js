@@ -1,6 +1,6 @@
 import Scene from "../scene";
 
-const gameTitle = "SPACE JUMP";
+const gameTitle = "SPACE JELLY";
 
 export function getStartScreen(callback) {
   return new Scene(

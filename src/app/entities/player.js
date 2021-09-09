@@ -12,6 +12,9 @@ export const TEASER = "teaser";
 export const GAME = "game";
 export const JUMP = "jump";
 
+const playerHeight = 31;
+const playerWidth = 28;
+
 export default class Player {
   constructor() {
     const image = document.querySelector("#char");
@@ -22,9 +25,9 @@ export default class Player {
     this.acceleration;
     this.dead = false;
     this.spriteSheet = SpriteSheet({
-      image: image,
-      frameWidth: 28,
-      frameHeight: 37,
+      image,
+      frameWidth: playerWidth,
+      frameHeight: playerHeight,
       animations: {
         walk: {
           frames: "0..3",
@@ -47,6 +50,11 @@ export default class Player {
       if (this.sprite) {
         this.sprite.dx = acceleration.x / 3;
       }
+    });
+
+    sub("collision", (args) => {
+      const pad = args.with;
+      this.jump(pad);
     });
   }
   handleMovement() {
@@ -75,8 +83,6 @@ export default class Player {
 
   getSprites() {
     const player = this;
-    const height = 31;
-    const width = 28;
 
     this.sprite =
       this.sprite ||
@@ -94,16 +100,15 @@ export default class Player {
         update() {
           if (player.state === TEASER) {
             this.playAnimation("jump");
-            player.dSize += player.ddSize;
             this.font = `${~~player.size}px serif`;
             this.rotation += this.dRotation;
 
-            if (this.width < width) {
-              this.width += 0.1;
-              this.height += 0.1;
+            if (this.width < playerWidth) {
+              this.width += 0.2;
+              this.height += 0.2;
             } else {
-              this.width = width;
-              this.height = height;
+              this.width = playerWidth;
+              this.height = playerHeight;
 
               if (radToDeg(this.rotation) % 360 < 10) {
                 this.rotation = this.dRotation = 0;
@@ -145,9 +150,6 @@ export default class Player {
   }
 
   leaveRocket(rocket) {
-    this.ddSize = 0.0025;
-    this.dSize = 0;
-
     this.x = rocket.sprite.x;
     this.y = rocket.sprite.y;
   }

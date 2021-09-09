@@ -1,4 +1,4 @@
-import { getCanvas, getContext, Sprite } from "kontra";
+import { getCanvas, getContext, Sprite, SpriteSheet } from "kontra";
 import { pub, sub } from "../pubsub";
 
 export const EASY = "easy";
@@ -7,10 +7,29 @@ export const HARD = "hard";
 
 export default class Pad {
   constructor({ y, config }) {
+    const image = document.querySelector("#pads");
+
     this.animate = true;
     this.initialY = y;
     this.speed = 0.5;
     this.config = config;
+    this.spriteSheet = SpriteSheet({
+      image,
+      frameWidth: 48,
+      frameHeight: 5,
+      animations: {
+        breakable: {
+          frames: [0],
+        },
+        breaking: {
+          frames: [1],
+        },
+        solid: {
+          frames: [2],
+        },
+      },
+    });
+    this.type = Math.random() > 0.1 ? "solid" : "breakable";
 
     sub("player:death", () => {
       this.animate = false;
@@ -18,9 +37,20 @@ export default class Pad {
     sub("player:superjump:start", () => {
       this.speed = 5 * 0.5;
     });
-
     sub("player:superjump:stop", () => {
       this.speed = 0.5;
+    });
+    sub("collision", (args) => {
+      const pad = args.with;
+
+      if (this.sprites[0] === pad) {
+        if (this.type === "breakable") {
+          this.type = "breaking";
+        } else if (this.type === "breaking") {
+          this.clearExtra();
+          pad.ttl = 0;
+        }
+      }
     });
   }
 
@@ -36,10 +66,13 @@ export default class Pad {
           x: ~~(Math.random() * (width / 2)),
           y: pad.initialY,
           dy: pad.speed,
-          width: ~~(width / 6),
-          height: 2,
-          color: "#999",
+          width: 48,
+          height: 5,
+          animations: this.spriteSheet.animations,
+          anchor: { x: 0.5, y: 0.5 },
           update() {
+            this.playAnimation(pad.type);
+
             if (pad.animate) {
               if (this.y + this.height > height / 2) {
                 if (this.deleteOnDisappear) {
