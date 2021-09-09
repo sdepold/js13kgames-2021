@@ -1,4 +1,4 @@
-import { degToRad, getCanvas, Text } from "kontra";
+import { getCanvas, Text } from "kontra";
 import { sub } from "../pubsub";
 
 export default class Rocket {
@@ -16,7 +16,7 @@ export default class Rocket {
       const rocket = this;
 
       this.sprite = Text({
-        text: "🚀",
+        text: "🛸",
         font: "32px Arial",
         x: 100,
         y: canvas.height / 2 + 50,
@@ -24,7 +24,6 @@ export default class Rocket {
         ddy: 0.003,
         anchor: { x: 0.5, y: 0.5 },
         textAlign: "center",
-        rotation: degToRad(-45),
         update() {
           if (this.y <= (canvas.height / 2) * 0.75) {
             if (rocket.gameStarted && !rocket.destinationedReachedTrigger) {
