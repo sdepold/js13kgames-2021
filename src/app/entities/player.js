@@ -141,10 +141,12 @@ export default class Player {
   }
 
   jump(pad) {
-    this.state = JUMP;
-    this.sprite.dy = pad.type === "trampoline" ? -4 : -2;
+    const isTrampoline = pad.animationName === "trampoline";
 
-    if (pad.type === "trampoline") {
+    this.state = JUMP;
+    this.sprite.dy = isTrampoline ? -4 : -2;
+
+    if (isTrampoline) {
       pub("player:superjump:start");
     }
   }

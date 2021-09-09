@@ -5,7 +5,7 @@ export function getEndScreen(player) {
   return new Scene(
     [
       "Thanks for playing",
-      ["SPACE JUMP", { fontSize: 20 }],
+      ["SPACE JELLY", { fontSize: 20 }],
       "",
       ["Final score: " + player.score, { fontSize: 16 }],
       "",

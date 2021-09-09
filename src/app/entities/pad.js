@@ -24,12 +24,14 @@ export default class Pad {
         breaking: {
           frames: [1],
         },
-        solid: {
+        trampoline: {
           frames: [2],
+        },
+        solid: {
+          frames: [3],
         },
       },
     });
-    this.type = Math.random() > 0.1 ? "solid" : "breakable";
 
     sub("player:death", () => {
       this.animate = false;
@@ -48,7 +50,8 @@ export default class Pad {
           this.type = "breaking";
         } else if (this.type === "breaking") {
           this.clearExtra();
-          pad.ttl = 0;
+          pad.height = 0;
+          pad.x = 1000;
         }
       }
     });
@@ -71,6 +74,7 @@ export default class Pad {
           animations: this.spriteSheet.animations,
           anchor: { x: 0.5, y: 0.5 },
           update() {
+            this.animationName = pad.type;
             this.playAnimation(pad.type);
 
             if (pad.animate) {
@@ -82,6 +86,7 @@ export default class Pad {
                   pub("pad:disappear", pad);
                   this.y = -10;
                   this.x = ~~(Math.random() * (width / 2));
+                  this.height = 5;
                   pad.clearExtra();
                   pad.addExtra();
                 }
@@ -108,8 +113,16 @@ export default class Pad {
 
   addExtra() {
     if (Math.random() < this.config.trampolineChance) {
-      this.addTrampoline();
+      this.type = "trampoline";
+    } else if (Math.random() > 0.1) {
+      this.type = "solid";
+    } else {
+      this.type = "breakable";
     }
+
+    // if (Math.random() < this.config.trampolineChance) {
+    //   this.addTrampoline();
+    // }
   }
 
   addTrampoline() {

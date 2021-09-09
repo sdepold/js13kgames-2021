@@ -7,9 +7,9 @@ export const MEDIUM = "medium";
 export const HARD = "hard";
 
 export const config = {
-  [EASY]: { padCount: 8, trampolineChance: 0.3, padScore: 1 },
-  [MEDIUM]: { padCount: 6, trampolineChance: 0.4, padScore: 2 },
-  [HARD]: { padCount: 4, trampolineChance: 0.6, padScore: 3 },
+  [EASY]: { padCount: 8, trampolineChance: 0.2, padScore: 1 },
+  [MEDIUM]: { padCount: 6, trampolineChance: 0.3, padScore: 2 },
+  [HARD]: { padCount: 4, trampolineChance: 0.5, padScore: 3 },
 };
 
 export default class Level {
