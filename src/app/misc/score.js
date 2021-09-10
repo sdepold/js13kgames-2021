@@ -8,7 +8,7 @@ export default class Score {
     sub("score:increase", (pad) => {
       this.score += pad.config.padScore;
 
-      if (this.score === 30 || this.score === 100) {
+      if (this.score === 50 || this.score === 200) {
         pub("level:increase");
       }
     });

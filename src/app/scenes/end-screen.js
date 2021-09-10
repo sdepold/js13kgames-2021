@@ -11,13 +11,13 @@ export function getEndScreen(score) {
       "",
       "",
       ["Try again", { fontSize: 18 }],
-      [tweetText, { fontSize: 18 }],
+      [tweetText, { fontSize: 10 }],
       ["Press to restart!", { footer: true }],
     ],
     (line) => {
       if (line && line.text === tweetText) {
         window.open(
-          `https://twitter.com/intent/tweet?url=https%3A%2F%2Fjs13kgames.com&via=sdepold&text=I%20scored%20${player.score}%20points%20at%20Space%20Jump%21&hashtags=js13k`,
+          `https://twitter.com/intent/tweet?url=https%3A%2F%2Fjs13kgames.com%2Fentries%2Fspace-jelly&via=sdepold&text=I%20scored%20${score}%20points%20at%20Space%20Jelly%21&hashtags=js13k`,
           "game",
           "width=800,height=600"
         );

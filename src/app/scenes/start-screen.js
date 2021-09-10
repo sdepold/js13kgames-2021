@@ -35,7 +35,7 @@ export function getStartScreen(callback) {
       "",
       ["Touch to start!", { pulsate: true }],
       [
-        "(The game will ask for audio + control access!)",
+        "(The game request control access!)",
         { footer: true, fontSize: 8 },
       ],
     ],

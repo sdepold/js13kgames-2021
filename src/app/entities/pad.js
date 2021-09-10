@@ -1,5 +1,6 @@
 import { getCanvas, getContext, Sprite, SpriteSheet } from "kontra";
 import { pub, sub } from "../pubsub";
+import Player from "./player";
 
 export const EASY = "easy";
 export const MEDIUM = "medium";
@@ -46,7 +47,7 @@ export default class Pad {
       const pad = args.with;
 
       if (this.sprites[0] === pad) {
-        if (this.type === "breakable") {
+        if (this.type === "breakable") { 
           this.type = "breaking";
         } else if (this.type === "breaking") {
           this.clearExtra();
@@ -120,33 +121,28 @@ export default class Pad {
       this.type = "breakable";
     }
 
-    if (Math.random() < 0.5) {
-      this.addTrampoline();
+    if (Math.random() < 0.2) {
+      this.addSplitter();
     }
   }
 
-  addTrampoline() {
+  addSplitter() {
     const pad = this;
     const parent = this.sprites[0];
-    const width = 20;
+    const [sprite] = new Player(undefined, true).getSprites();
 
-    this.sprites.push(
-      Sprite({
-        x: parent.x + parent.width / 2 - width / 2,
-        y: parent.y,
-        width,
-        height: 10,
-        color: "yellow",
-        type: "splitter",
-        update() {
-          if (pad.animate) {
-            this.x = parent.x + parent.width / 2 - width / 2;
-            this.y = parent.y - 10;
+    sprite.type = "splitter";
+    sprite.height = 20;
+    sprite.width = 16;
+    sprite.update = () => {
+      if (pad.animate) {
+        sprite.x = parent.x;
+        sprite.y = parent.y - 10;
 
-            this.advance();
-          }
-        },
-      })
-    );
+        sprite.advance();
+      }
+    };
+
+    this.sprites.push(sprite);
   }
 }

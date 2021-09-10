@@ -17,7 +17,7 @@ const playerHeight = 31;
 const playerWidth = 25;
 
 export default class Player {
-  constructor(game) {
+  constructor(game, noPadSubscription) {
     const image = document.querySelector("#char");
 
     this.game = game;
@@ -40,15 +40,27 @@ export default class Player {
       },
     });
 
-    sub("pad:disappear", (pad) => {
-      pub("score:increase", pad);
-    });
+    if (!noPadSubscription) {
+      this.observePads();
+    }
 
     sub("device:tilt", (acceleration) => {
       if (this.sprite) {
         this.sprite.dx = acceleration.x / 3;
       }
     });
+  }
+
+  observePads() {
+    if (!this.observingPads) {
+      this.observingPads = true;
+
+      sub("pad:disappear", (pad) => {
+        if (!this.dead && this.sprite && this.sprite.type === "player") {
+          pub("score:increase", pad);
+        }
+      });
+    }
   }
 
   clone(offsetX) {
@@ -58,6 +70,7 @@ export default class Player {
     );
 
     delete result.sprite;
+    delete result.observingPads;
 
     const [sprite] = result.getSprites();
 
@@ -66,6 +79,8 @@ export default class Player {
     });
     sprite.x += offsetX;
     sprite.clone = true;
+
+    result.observePads();
 
     return result;
   }
@@ -93,6 +108,7 @@ export default class Player {
       if (isLastPlayerSprite(this.game)) {
         pub("player:death", this);
       }
+      this.dead = true;
       this.sprite.ttl = 0;
     }
   }
