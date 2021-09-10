@@ -1,3 +1,5 @@
+import { song } from "./songs/song";
+
 export function initAudio() {
   var AudioContext = window.AudioContext || window.webkitAudioContext;
   var context = new AudioContext();
@@ -22,4 +24,30 @@ export function initAudio() {
   return navigator.mediaDevices
     .getUserMedia({ audio: true, video: false })
     .then(handleSuccess);
+}
+
+// Polyfill rIC if needed
+if (!("requestIdleCallback" in window)) {
+  requestIdleCallback = (callback) => {
+    setTimeout(callback, 200);
+  };
+}
+
+let currentNode = null;
+let currentBuffer = null;
+
+const renderSong = (song) =>
+  new Promise((resolve) => requestIdleCallback(() => resolve(zzfxM(...song))));
+const playSong = async (song) => {
+  if (!currentBuffer) {
+    currentBuffer = await renderSong(song);
+  }
+  currentNode = zzfxP(...currentBuffer);
+  currentNode.loop = true;
+  await zzfxX.resume();
+};
+
+export function playMusic() {
+  zzfxV = 0.3;
+  playSong(song);
 }

@@ -1,21 +1,21 @@
 import { collides, GameLoop, getContext, init, initKeys } from "kontra";
-import { initAudio } from "./audio";
+import { initAudio, playMusic } from "./audio";
+import { initDeviceControl } from "./device-control";
 import Background from "./entities/background";
+import Level from "./entities/level";
 import Player, { GAME } from "./entities/player";
 import Rocket from "./entities/rocket";
 import Game from "./game";
-import Level from "./entities/level";
-import Scene from "./scene";
-import { getStartScreen } from "./scenes/start-screen";
 import { setCanvasSize } from "./misc/helper";
 import Score from "./misc/score";
-import { initDeviceControl } from "./device-control";
 import { pub, sub } from "./pubsub";
 import { getEndScreen } from "./scenes/end-screen";
+import { getStartScreen } from "./scenes/start-screen";
 
 setCanvasSize();
 init();
 initKeys();
+playMusic();
 
 const game = new Game();
 const player = new Player();
@@ -40,10 +40,10 @@ const startScreen = getStartScreen(async () => {
     game.add(level);
     pub("game:start");
   };
-  console.log("Init audio...");
-  await initAudio().catch(console.log);
+
   console.log("Init device control...");
   await initDeviceControl();
+
   console.log("Init game...");
   initGame();
 });
@@ -61,7 +61,7 @@ GameLoop({
     if (level && player && player.state === GAME) {
       level.getSprites().forEach((pad) => {
         if (collides(player.sprite, pad)) {
-          pub('collision', {with: pad})
+          pub("collision", { with: pad });
         }
       });
     }
