@@ -1,12 +1,17 @@
 import { Text } from "kontra";
+import { pub, sub } from "../pubsub";
 
 export default class Score {
-  constructor(player) {
-    this.player = player;
-  }
+  constructor() {
+    this.score = 0;
 
-  get score() {
-    return this.player && this.player.score;
+    sub("score:increase", (pad) => {
+      this.score += pad.config.padScore;
+
+      if (this.score === 30 || this.score === 100) {
+        pub("level:increase");
+      }
+    });
   }
 
   getSprites() {
@@ -19,9 +24,9 @@ export default class Score {
         y: 10,
         font: "12px Marker Felt",
         color: "white",
-        text: `Score: ${entity.score || 0}`,
+        text: `Score: ${entity.score}`,
         update() {
-          this.text = `Score: ${entity.score || 0}`;
+          this.text = `Score: ${entity.score}`;
         },
       });
 

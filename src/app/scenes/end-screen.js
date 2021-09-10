@@ -1,13 +1,13 @@
 import Scene from "../scene";
 
-export function getEndScreen(player) {
+export function getEndScreen(score) {
   const tweetText = "Tell the world";
   return new Scene(
     [
       "Thanks for playing",
       ["SPACE JELLY", { fontSize: 20 }],
       "",
-      ["Final score: " + player.score, { fontSize: 16 }],
+      ["Final score: " + score, { fontSize: 16 }],
       "",
       "",
       ["Try again", { fontSize: 18 }],

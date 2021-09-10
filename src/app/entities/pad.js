@@ -120,9 +120,9 @@ export default class Pad {
       this.type = "breakable";
     }
 
-    // if (Math.random() < this.config.trampolineChance) {
-    //   this.addTrampoline();
-    // }
+    if (Math.random() < 0.5) {
+      this.addTrampoline();
+    }
   }
 
   addTrampoline() {
@@ -137,7 +137,7 @@ export default class Pad {
         width,
         height: 10,
         color: "yellow",
-        type: "trampoline",
+        type: "splitter",
         update() {
           if (pad.animate) {
             this.x = parent.x + parent.width / 2 - width / 2;

@@ -6,6 +6,7 @@ import {
   SpriteSheet,
   Text,
 } from "kontra";
+import { isLastPlayerSprite } from "../misc/player-spawner";
 import { pub, sub } from "../pubsub";
 
 export const TEASER = "teaser";
@@ -13,15 +14,15 @@ export const GAME = "game";
 export const JUMP = "jump";
 
 const playerHeight = 31;
-const playerWidth = 28;
+const playerWidth = 25;
 
 export default class Player {
-  constructor() {
+  constructor(game) {
     const image = document.querySelector("#char");
 
+    this.game = game;
     this.size = 1;
     this.state = TEASER;
-    this.score = 0;
     this.acceleration;
     this.dead = false;
     this.spriteSheet = SpriteSheet({
@@ -40,10 +41,7 @@ export default class Player {
     });
 
     sub("pad:disappear", (pad) => {
-      this.score += pad.config.padScore;
-      if (this.score === 30 || this.score === 100) {
-        pub("level:increase");
-      }
+      pub("score:increase", pad);
     });
 
     sub("device:tilt", (acceleration) => {
@@ -51,12 +49,27 @@ export default class Player {
         this.sprite.dx = acceleration.x / 3;
       }
     });
-
-    sub("collision", (args) => {
-      const pad = args.with;
-      this.jump(pad);
-    });
   }
+
+  clone(offsetX) {
+    let result = Object.assign(
+      Object.create(Object.getPrototypeOf(this)),
+      this
+    );
+
+    delete result.sprite;
+
+    const [sprite] = result.getSprites();
+
+    "x,y,height,width,dy,ddy".split(",").forEach((prop) => {
+      sprite[prop] = this.sprite[prop];
+    });
+    sprite.x += offsetX;
+    sprite.clone = true;
+
+    return result;
+  }
+
   handleMovement() {
     if (keyPressed("left")) {
       this.sprite.x -= 3;
@@ -77,7 +90,10 @@ export default class Player {
       this.sprite.x = 0;
     }
     if (!this.dead && this.sprite.y >= canvas.height / 2) {
-      pub("player:death", this);
+      if (isLastPlayerSprite(this.game)) {
+        pub("player:death", this);
+      }
+      this.sprite.ttl = 0;
     }
   }
 
@@ -87,6 +103,8 @@ export default class Player {
     this.sprite =
       this.sprite ||
       Sprite({
+        type: "player",
+        player,
         x: this.x,
         y: this.y,
         width: 1,

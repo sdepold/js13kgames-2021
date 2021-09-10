@@ -7,6 +7,7 @@ import Player, { GAME } from "./entities/player";
 import Rocket from "./entities/rocket";
 import Game from "./game";
 import { setCanvasSize } from "./misc/helper";
+import { observePlayerSpawning } from "./misc/player-spawner";
 import Score from "./misc/score";
 import { pub, sub } from "./pubsub";
 import { getEndScreen } from "./scenes/end-screen";
@@ -18,7 +19,7 @@ initKeys();
 playMusic();
 
 const game = new Game();
-const player = new Player();
+const player = new Player(game);
 const rocket = new Rocket({
   onDestinationReached() {
     game.add(player);
@@ -32,6 +33,7 @@ const rocket = new Rocket({
 game.loaded = true;
 
 let level;
+const score = new Score();
 const startScreen = getStartScreen(async () => {
   const initGame = () => {
     level = new Level();
@@ -50,19 +52,28 @@ const startScreen = getStartScreen(async () => {
 game.add(new Background());
 game.add(startScreen, 12);
 game.add(rocket);
-game.add(new Score(player));
+game.add(score);
 
 sub("player:death", (player) => {
-  game.add(getEndScreen(player), 13);
+  game.add(getEndScreen(score.score), 13);
 });
+
+observePlayerSpawning(game);
 
 GameLoop({
   update() {
     if (level && player && player.state === GAME) {
+      const playerSprite = game
+        .getSprites()
+        .filter((s) => s.type === "player");
+
       level.getSprites().forEach((pad) => {
-        if (collides(player.sprite, pad)) {
-          pub("collision", { with: pad });
-        }
+        playerSprite.forEach((playerSprite) => {
+          
+          if (collides(playerSprite, pad)) {
+            pub("collision", { with: pad, player: playerSprite.player });
+          }
+        });
       });
     }
     game.getSprites().forEach((sprite) => sprite.update && sprite.update());
