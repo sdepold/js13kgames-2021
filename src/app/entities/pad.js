@@ -67,6 +67,7 @@ export default class Pad {
       this.sprites = [
         Sprite({
           type: "pad",
+          parent: pad,
           x: ~~(Math.random() * (width / 2)),
           y: pad.initialY,
           dy: pad.speed,

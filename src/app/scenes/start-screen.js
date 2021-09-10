@@ -3,6 +3,8 @@ import Scene from "../scene";
 const gameTitle = "SPACE JELLY";
 
 export function getStartScreen(callback) {
+  let clicked = false;
+
   return new Scene(
     [
       "Welcome to",
@@ -34,12 +36,14 @@ export function getStartScreen(callback) {
       "",
       "",
       ["Touch to start!", { pulsate: true }],
-      [
-        "(The game request control access!)",
-        { footer: true, fontSize: 8 },
-      ],
+      ["(The game request control access!)", { footer: true, fontSize: 8 }],
     ],
-    callback,
+    () => {
+      if (!clicked) {
+        clicked = true;
+        callback();
+      }
+    },
     {
       fontSize: 14,
       lineHeight: 30,
