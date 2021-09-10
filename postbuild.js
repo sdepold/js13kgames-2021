@@ -5,6 +5,7 @@ const { execFile, execFileSync } = require("child_process");
 (async () => {
   execFileSync("npx", [
     "roadroller",
+    "-O2",
     "./dist/main.js",
     "-o",
     "./dist/main.new.js",
