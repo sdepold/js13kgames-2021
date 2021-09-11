@@ -51,3 +51,7 @@ export function playMusic() {
   zzfxV = 0.3;
   playSong(song);
 }
+
+export function playAudio(seq) {
+  zzfx(...eval(`[${seq}]`))
+}

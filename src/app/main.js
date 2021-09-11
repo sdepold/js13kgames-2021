@@ -1,5 +1,5 @@
 import { collides, GameLoop, getContext, init, initKeys } from "kontra";
-import { initAudio, playMusic } from "./audio";
+import { initAudio, playAudio, playMusic } from "./audio";
 import { initDeviceControl } from "./device-control";
 import Background from "./entities/background";
 import Level from "./entities/level";
@@ -36,7 +36,7 @@ let level;
 const score = new Score();
 const startScreen = getStartScreen(async () => {
   const initGame = () => {
-    zzfx(...[0,,7,.04,.02,.03,1,.01,,26,,,,.1,253,,,.24,.03,.03]); // Blip 141
+    playAudio('0,,7,.04,.02,.03,1,.01,,26,,,,.1,253,,,.24,.03,.03');
     level = new Level();
 
     startScreen.hide();
