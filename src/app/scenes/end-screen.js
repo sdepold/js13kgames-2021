@@ -32,11 +32,13 @@ export function getEndScreen(score) {
     ],
     (line) => {
       if (line && line.text === tweetText) {
-        window.open(
-          `https://twitter.com/intent/tweet?url=https%3A%2F%2Fjs13kgames.com%2Fentries%2Fspace-jelly&via=sdepold&text=I%20scored%20${score}%20points%20at%20Space%20Jelly%21&hashtags=js13k`,
-          "game",
-          "width=800,height=600"
-        );
+        const a = document.createElement("a");
+        a.href = `https://twitter.com/intent/tweet?url=https%3A%2F%2Fjs13kgames.com%2Fentries%2Fspace-jelly&via=sdepold&text=I%20scored%20${score}%20points%20at%20Space%20Jelly%21&hashtags=js13k`;
+        a.style.position = "absolute";
+        a.style.top = "-1000px";
+        a.target='_blank';
+        document.body.appendChild(a);
+        a.click();
       } else {
         document.location.reload();
       }
