@@ -36,30 +36,7 @@ let level;
 const score = new Score();
 const startScreen = getStartScreen(async () => {
   const initGame = () => {
-    zzfx(
-      ...[
-        0,
-        ,
-        7,
-        0.04,
-        0.02,
-        0.03,
-        1,
-        0.01,
-        ,
-        26,
-        ,
-        ,
-        ,
-        0.1,
-        253,
-        ,
-        ,
-        0.24,
-        0.03,
-        0.03,
-      ]
-    ); // Blip 141
+    zzfx(...[0,,7,.04,.02,.03,1,.01,,26,,,,.1,253,,,.24,.03,.03]); // Blip 141
     level = new Level();
 
     startScreen.hide();

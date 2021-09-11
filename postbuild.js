@@ -5,7 +5,7 @@ const { execFile, execFileSync } = require("child_process");
 (async () => {
   execFileSync("npx", [
     "roadroller",
-    "-O2",
+    // "-O2",
     "./dist/main.js",
     "-o",
     "./dist/main.new.js",
@@ -69,11 +69,7 @@ const { execFile, execFileSync } = require("child_process");
     name: "index.html",
   });
 
-  // fs.readdirSync("./dist").filter(f => f.endsWith("gif")).forEach(file => {
-  //   archive.append(fs.createReadStream(`./dist/${file}`), {
-  //     name: file
-  //   });
-  // });
-
   archive.finalize();
+
+  execFileSync("cp", ["-f", "./dist/index.html", "./docs/"]);
 })();
