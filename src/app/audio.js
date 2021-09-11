@@ -28,7 +28,7 @@ export function initAudio() {
 
 // Polyfill rIC if needed
 if (!("requestIdleCallback" in window)) {
-  requestIdleCallback = (callback) => {
+  window.requestIdleCallback = (callback) => {
     setTimeout(callback, 200);
   };
 }
