@@ -1,42 +1,29 @@
 import Scene from "../scene";
-
-const gameTitle = "SPACE JELLY";
+import { getGameTitle } from "./game-title";
+import { Mascot } from "./octopus";
 
 export function getStartScreen(callback) {
   let clicked = false;
+  const mascot = new Mascot();
 
   return new Scene(
     [
+      (ctx, canvas, line) => {
+        mascot
+          .getSprites()
+          .filter((s) => s.isAlive())
+          .forEach((s) => {
+            s.update();
+            s.render();
+          });
+      },
       "Welcome to",
-      (() => {
-        let text = gameTitle;
-        let lastShuffle = new Date();
-        let delta = 2000;
-
-        return function (ctx, canvas, line) {
-          if (new Date() - lastShuffle > delta) {
-            text = text
-              .split("")
-              .sort(() => (Math.random() > 0.5 ? -1 : 1))
-              .join("");
-            if (Math.random() < 0.2) {
-              text = gameTitle;
-            } else if (Math.random() > 0.8) {
-              text = gameTitle;
-            }
-            lastShuffle = new Date();
-            delta = 250;
-          }
-
-          this.context.font = `20px Marker Felt`;
-          ctx.fillText(text, this.width / 4, line.y);
-        };
-      })(),
+      getGameTitle(),
       "",
       "",
       "",
       ["Touch to start!", { pulsate: true }],
-      ["(The game request control access!)", { footer: true, fontSize: 8 }],
+      ["(The game requests device access!)", { footer: true, fontSize: 8 }],
     ],
     () => {
       if (!clicked) {

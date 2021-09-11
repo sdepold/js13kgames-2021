@@ -1,16 +1,32 @@
 import Scene from "../scene";
+import { getGameTitle } from "./game-title";
+import { Mascot } from "./octopus";
 
 export function getEndScreen(score) {
   const tweetText = "Tell the world";
+  const mascots = [
+    new Mascot({ width: 40, height: 50 }),
+    new Mascot({ width: 40, height: 50, origin: "left" }),
+  ];
+
   return new Scene(
     [
-      "Thanks for playing",
-      ["SPACE JELLY", { fontSize: 20 }],
+      (ctx, canvas, line) => {
+        mascots.forEach((mascot) =>
+          mascot
+            .getSprites()
+            .filter((s) => s.isAlive())
+            .forEach((s) => {
+              s.update();
+              s.render();
+            })
+        );
+      },
+      ["Thanks for playing", { fontSize: 10 }],
+      getGameTitle(),
       "",
-      ["Final score: " + score, { fontSize: 16 }],
-      "",
-      "",
-      ["Try again", { fontSize: 18 }],
+      ["Final score"],
+      [score, { fontSize: 26 }],
       [tweetText, { fontSize: 10 }],
       ["Press to restart!", { footer: true }],
     ],
@@ -24,6 +40,11 @@ export function getEndScreen(score) {
       } else {
         document.location.reload();
       }
+    },
+
+    {
+      fontSize: 14,
+      lineHeight: 30,
     }
   );
 }

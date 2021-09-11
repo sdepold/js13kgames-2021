@@ -16,29 +16,37 @@ export const JUMP = "jump";
 const playerHeight = 31;
 const playerWidth = 25;
 
+export function createPlayerSpriteSheet() {
+  const image = document.querySelector("#char");
+
+  return SpriteSheet({
+    image,
+    frameWidth: playerWidth,
+    frameHeight: playerHeight,
+    animations: {
+      walk: {
+        frames: "0..3",
+        frameRate: 8,
+      },
+      idle: {
+        frames: "0..1",
+        frameRate: 2,
+      },
+      jump: {
+        frames: "1..1",
+      },
+    },
+  });
+}
+
 export default class Player {
   constructor(game, noPadSubscription) {
-    const image = document.querySelector("#char");
-
     this.game = game;
     this.size = 1;
     this.state = TEASER;
     this.acceleration;
     this.dead = false;
-    this.spriteSheet = SpriteSheet({
-      image,
-      frameWidth: playerWidth,
-      frameHeight: playerHeight,
-      animations: {
-        walk: {
-          frames: "0..3",
-          frameRate: 8,
-        },
-        jump: {
-          frames: "1..1",
-        },
-      },
-    });
+    this.spriteSheet = createPlayerSpriteSheet();
 
     if (!noPadSubscription) {
       this.observePads();
