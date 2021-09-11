@@ -52,6 +52,10 @@ export default class Player {
       this.observePads();
     }
 
+    this.observeTilt();
+  }
+
+  observeTilt() {
     sub("device:tilt", (acceleration) => {
       if (this.sprite) {
         this.sprite.dx = acceleration.x / 3;
@@ -89,6 +93,7 @@ export default class Player {
     sprite.clone = true;
 
     result.observePads();
+    result.observeTilt();
 
     return result;
   }
