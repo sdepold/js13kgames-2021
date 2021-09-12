@@ -1,3 +1,12 @@
-# Noegnud
+# Space Jelly
 
-Noegnud is a tiny dungeon crawler in which you started with a randomly skilled hero on the bottom most floor. After every second finished round you'll have to remove one of your skills and make it all the BACK to the top of the dungeon.
+Space Jelly is my entry to 2021's edition of js13kGames. 
+
+Space Jelly is a MOBILE GAME in which you control an alien that lost control of its ship and needs to continue its travel using ... alternative ways of transportation.
+On that trip, you'll find like-minded folks that will gladly join you on your way.
+
+Possible controls
+- Touch left or right half of the screen to move character accordingly
+- Arrow keys on mobile browser emulators
+
+![screenshot](https://github.com/sdepold/js13kgames-2021/blob/master/docs/screen-400x250.png?raw=true)
