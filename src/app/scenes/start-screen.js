@@ -20,10 +20,7 @@ export function getStartScreen(callback) {
       "Welcome to",
       getGameTitle(),
       "",
-      "",
-      "",
       ["Touch to start!", { pulsate: true }],
-      ["(The game requests device access!)", { footer: true, fontSize: 8 }],
     ],
     () => {
       if (!clicked) {

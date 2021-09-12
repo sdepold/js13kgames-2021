@@ -6,6 +6,7 @@ import {
   SpriteSheet,
   Text,
 } from "kontra";
+import { isLeftTouch, isRightTouch } from "../device-control";
 import { isLastPlayerSprite } from "../misc/player-spawner";
 import { pub, sub } from "../pubsub";
 
@@ -58,7 +59,7 @@ export default class Player {
   observeTilt() {
     sub("device:tilt", (acceleration) => {
       if (this.sprite) {
-        this.sprite.dx = acceleration.x / 3;
+        this.sprite.dx = acceleration.x / 2;
       }
     });
   }
@@ -99,11 +100,11 @@ export default class Player {
   }
 
   handleMovement() {
-    if (keyPressed("left")) {
+    if (isLeftTouch()) {
       this.sprite.x -= 3;
       this.sprite.scaleX = 1;
     }
-    if (keyPressed("right")) {
+    if (isRightTouch()) {
       this.sprite.x += 3;
       this.sprite.scaleX = -1;
     }
