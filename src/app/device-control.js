@@ -5,9 +5,11 @@ let touchPositionX = null;
 
 export function initDeviceControl() {
   document.addEventListener("touchstart", (e) => {
+    e.preventDefault();
     touchPositionX = e.touches[0].clientX;
   });
   document.addEventListener("touchmove", (e) => {
+    e.preventDefault();
     touchPositionX = e.touches[0].clientX;
   });
   document.addEventListener("touchend", () => {
